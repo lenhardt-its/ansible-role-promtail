@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Promtail Loki Agent
+Documentation=https://github.com/grafana/loki
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ promtail_system_user }}
+Group={{ promtail_system_group }}
+ExecStart={{ promtail_binary_install_dir }}/promtail -config.file {{ promtail_config_dir }}/{{ promtail_config_file }}
+SyslogIdentifier=promtail
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
