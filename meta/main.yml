@@ -1,15 +1,29 @@
 ---
 galaxy_info:
+  role_name: promtail
   author: Dominik Lenhardt
-  description: Ansible role for installing and configuring promtail
-  license: license (Apache)
-  min_ansible_version: 2.5
+  description: Installing and configure Grafana Promtail (Loki)
+  license: "MIT"
+  min_ansible_version: 2.9
   platforms:
-  - name: EL
-    versions:
-    - 7
-    - 8
-  categories:
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Debian
+      versions:
+        - buster
+        - stretch
+    - name: Ubuntu
+      versions:
+        - focal
+        - bionic
+  galaxy_tags:
   - system
+  - network
+  - linux
   - monitoring
+  - logging
+  - loki
+  - grafana
 dependencies: []

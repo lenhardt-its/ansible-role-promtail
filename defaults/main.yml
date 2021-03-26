@@ -1,17 +1,17 @@
 ---
 proxy_env: {}
-promtail_version: 1.6.0
+promtail_version: 2.2.0
 promtail_listen_port: 9080
 promtail_config_dir: /etc/promtail
 promtail_config_file: config.yml
 promtail_config_file_sd_dir: "{{ promtail_config_dir }}/file_sd"
 promtail_binary_install_dir: /usr/local/bin
-promtail_data_dir: "/var/lib/promtail"
+promtail_data_dir: /var/lib/promtail
 promtail_config_log_level: warn
-promtail_system_user: "promtail"
-promtail_system_group: "promtail"
-promtail_user_additional_groups: "adm"
-promtail_firewalld_state: "disabled" # enabled/disabled
+promtail_system_user: promtail
+promtail_system_group: promtail
+promtail_user_additional_groups: adm
+promtail_allow_firewall: false
 promtail_server_config:
   http_listen_address: "{{ ansible_default_ipv4.address }}"
   http_listen_port: "{{ promtail_listen_port }}"
