@@ -161,6 +161,7 @@
     capability: CAP_NET_BIND_SERVICE+ep
     state: present
   when: promtail_web_listen_port <= 1024
+  tags: promtail
 
 - name: allow binding to port in selinux
   seport:
@@ -195,22 +196,10 @@
   notify: reload ufw
   become: true
   tags: promtail
-  register: "_firewalld_promtail_state"
   when:
     - "'active' in _ufw_status.stdout"
     - ansible_os_family == 'Debian'
     - promtail_allow_firewall
-
-- name: reload ufw
-  systemd:
-    name: ufw
-    state: reloaded
-  when:
-    - _firewalld_promtail_state['changed']
-    - ansible_os_family == 'Debian'
-    - promtail_allow_firewall
-  become: true
-  tags: promtail
 
 - name: configure firewalld
   firewalld:
@@ -220,18 +209,7 @@
   when:
     - promtail_allow_firewall
     - ansible_os_family == 'RedHat'
-  register: "_firewalld_promtail_state"
-  become: true
-  tags: promtail
-
-- name: reload firewalld
-  systemd:
-    name: firewalld
-    state: reloaded
-  when:
-    - promtail_allow_firewall
-    - _firewalld_promtail_state['changed']
-    - - ansible_os_family == 'RedHat'
+  notify: reload firewalld
   become: true
   tags: promtail
 
