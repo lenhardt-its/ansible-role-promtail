@@ -201,7 +201,9 @@
     port: "{{ promtail_web_listen_port }}"
     proto: tcp
     state: enabled
-    comment: "promtail"
+    comment: "Grafana Loki Promtail"
+  changed_when: False
+  ignore_errors: True
   notify: reload ufw
   become: true
   tags: promtail
@@ -215,6 +217,8 @@
     port: "{{ promtail_web_listen_port }}/tcp"
     permanent: yes
     state: true
+  changed_when: False
+  ignore_errors: True
   when:
     - "'running' in _firewalld_status.stdout"
     - promtail_allow_firewall
