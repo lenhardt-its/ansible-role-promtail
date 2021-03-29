@@ -117,7 +117,7 @@
     when: not ansible_check_mode
     become: true
     tags: promtail
-  when: (not __promtail_is_installed.stat.exists) or (__promtail_current_version_output.stdout_lines[0].split(" ")[2] != promtail_version)
+  when: (not __promtail_is_installed.stat.exists) or (__promtail_current_version_output.stdout.split(" ")[2] != promtail_version)
 
 - name: create directories
   file:
