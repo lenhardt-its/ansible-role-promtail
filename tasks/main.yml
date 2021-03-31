@@ -49,7 +49,7 @@
       validate_certs: false
       user: "{{ lookup('env', 'GH_USER') | default(omit) }}"
       password: "{{ lookup('env', 'GH_TOKEN') | default(omit) }}"
-    environment: "{{proxy_env}}"
+    environment: "{{ proxy_env }}"
     no_log: "{{ not lookup('env', 'MOLECULE_DEBUG') | bool }}"
     register: _latest_release
     until: _latest_release.status == 200
@@ -77,7 +77,7 @@
     set_fact:
       promtail_checksum: "{{ item.split(' ')[0] }}"
     with_items: "{{ _checksums }}"
-    when: "('linux-' + go_arch + '.zip') in item"
+    when: "('promtail-linux-' + go_arch + '.zip') in item"
     become: true
     tags: promtail
 
@@ -86,7 +86,7 @@
       url: "https://github.com/grafana/loki/releases/download/v{{ promtail_version }}/promtail-linux-{{ go_arch }}.zip"
       dest: "/tmp/promtail-{{ promtail_version }}.linux-{{ go_arch }}.zip"
       checksum: "sha256:{{ promtail_checksum }}"
-    environment: "{{proxy_env}}"
+    environment: "{{ proxy_env }}"
     register: _download_binary
     until: _download_binary is succeeded
     retries: 5
@@ -142,7 +142,9 @@
     mode: 0644
   notify: restart promtail
   become: true
-  tags: promtail
+  tags:
+    - promtail
+    - promtail_config
 
 - name: create systemd service unit
   template:
@@ -160,12 +162,12 @@
     path: "{{ promtail_binary_install_dir }}/promtail"
     capability: CAP_NET_BIND_SERVICE+ep
     state: present
-  when: promtail_web_listen_port <= 1024
+  when: promtail_listen_port <= 1024
   tags: promtail
 
 - name: allow binding to port in selinux
   seport:
-    ports: "{{ promtail_web_listen_port }}"
+    ports: "{{ promtail_listen_port }}"
     proto: tcp
     setype: http_port_t
     state: present
@@ -198,7 +200,7 @@
 - name: configure ufw
   community.general.ufw:
     rule: allow
-    port: "{{ promtail_web_listen_port }}"
+    port: "{{ promtail_listen_port }}"
     proto: tcp
     state: enabled
     comment: "Grafana Loki Promtail"
@@ -214,7 +216,7 @@
 
 - name: configure firewalld
   firewalld:
-    port: "{{ promtail_web_listen_port }}/tcp"
+    port: "{{ promtail_listen_port }}/tcp"
     permanent: yes
     state: true
   changed_when: False

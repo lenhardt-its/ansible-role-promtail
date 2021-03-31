@@ -2,48 +2,45 @@
 proxy_env: {}
 promtail_version: 2.2.0
 promtail_listen_port: 9080
+promtail_listen_address: 0.0.0.0
 promtail_config_dir: /etc/promtail
 promtail_config_file: config.yml
 promtail_config_file_sd_dir: "{{ promtail_config_dir }}/file_sd"
 promtail_binary_install_dir: /usr/local/bin
 promtail_data_dir: /var/lib/promtail
 promtail_config_log_level: warn
-promtail_system_user: promtail
-promtail_system_group: promtail
+promtail_system_user: "{{ prometheus_user | default('loki') }}"
+promtail_system_group: "{{ prometheus_user | default('loki') }}"
 promtail_user_additional_groups: adm
 promtail_allow_firewall: false
-promtail_server_config:
-  http_listen_address: "{{ ansible_default_ipv4.address }}"
-  http_listen_port: "{{ promtail_listen_port }}"
-  grpc_listen_address: "{{ ansible_default_ipv4.address }}"
-  grpc_listen_port: 0
-  log_level: "{{ promtail_config_log_level }}"
-
-promtail_config_include_default_file_sd_config: True
-
-promtail_config_default_file_sd_config:
-  - job_name: file_sd
-    file_sd_configs:
-      - files:
-          - "{{ promtail_config_file_sd_dir }}/*.yml"
-          - "{{ promtail_config_file_sd_dir }}/*.yaml"
-          - "{{ promtail_config_file_sd_dir }}/*.json"
-
-promtail_clients_config:
-  - url: http://127.0.0.1:3100/loki/api/v1/push
-    tenant_id: prime
-    external_labels:
-      node: "{{ inventory_hostname }}"
-
-promtail_scrape_config:
-  - job_name: journal
-    journal:
-      max_age: 12h
-      labels:
-        job: systemd-journal
-        host: '{{ ansible_hostname }}.{{ ansible_domain }}'
-        environment: "%{::dvag_branch}"
-        product: "%{::dvag_product}"
-    relabel_configs:
-      - source_labels: [__journal__systemd_unit]
-        target_label: 'unit'
+promtail_config:
+  positions:
+    filename: "{{ promtail_data_dir }}/positions.yaml"
+  server:
+    http_listen_address: "{{ promtail_listen_address }}"
+    http_listen_port: "{{ promtail_listen_port }}"
+    grpc_listen_address: "{{ promtail_listen_address }}"
+    grpc_listen_port: 0
+    log_level: "{{ promtail_config_log_level }}"
+  clients:
+    - url: http://127.0.0.1:3100/loki/api/v1/push
+      tenant_id: prime
+      external_labels:
+        node: "{{ inventory_hostname }}"
+  scrape_configs:
+    - job_name: journal
+      journal:
+        max_age: 24h
+        labels:
+          job: systemd-journal
+          architecture: "{{ ansible_architecture }}"
+          distribution: "{{ ansible_distribution | lower }}"
+          distribution_version: "{{ ansible_distribution_version }}"
+          virt: "{{ ansible_virtualization_type }}"
+          hostname: "{{ ansible_hostname }}.{{ ansible_domain }}"
+          environment: "prod"
+          product: "infra"
+          severity: "critical"
+      relabel_configs:
+        - source_labels: [__journal__systemd_unit]
+          target_label: 'unit'

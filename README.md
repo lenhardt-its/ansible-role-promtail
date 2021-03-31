@@ -30,21 +30,18 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `proxy_env` | {} | Proxy environment variables |
 | `promtail_version` | 2.2.0 | app version |
 | `promtail_listen_port` | 9080 | default listen port |
+| `promtail_listen_address` | 0.0.0.0 | default listen address |
 | `promtail_config_dir` | /etc/promtail | default config dir |
 | `promtail_config_file` | config.yml | default config file |
 | `promtail_config_file_sd_dir` | "{{ promtail_config_dir }}/file_sd" | default file_sd dir |
 | `promtail_binary_install_dir` | /usr/local/bin | default bin dir |
 | `promtail_data_dir` | /var/lib/promtail | default data dir |
 | `promtail_config_log_level` | warn | default log level |
-| `promtail_system_user` | promtail | default system user |
-| `promtail_system_group` | promtail | default system group |
+| `promtail_system_user` | loki | default system user |
+| `promtail_system_group` | loki | default system group |
 | `promtail_user_additional_groups` | adm | additional groups |
 | `promtail_allow_firewall` | false | allow on firewall |
-| `promtail_config_include_default_file_sd_config` | True | - |
-| `promtail_config_default_file_sd_config` | [] |  |
-| `promtail_server_config` | [] | server config |
-| `promtail_clients_config` | [] | client config |
-| `promtail_scrape_config` | [] | scrape config |
+| `promtail_config` | [defaults/main.yml#L16](defaults/main.yml#L16) | server config |
 
 ## Example
 
