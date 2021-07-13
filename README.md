@@ -19,7 +19,6 @@ Deploy [Promtail](https://github.com/grafana/loki) using ansible.
 ## Requirements
 
 - Ansible >= 2.9 (It might work on previous versions, but we cannot guarantee it)
-- Community Packages: `ansible-galaxy collection install community.general`
 
 ## Role Variables
 
@@ -40,7 +39,6 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `promtail_system_user` | loki | default system user |
 | `promtail_system_group` | loki | default system group |
 | `promtail_user_additional_groups` | adm | additional groups |
-| `promtail_allow_firewall` | false | allow on firewall |
 | `promtail_config` | [defaults/main.yml#L16](defaults/main.yml#L16) | server config |
 
 ## Example

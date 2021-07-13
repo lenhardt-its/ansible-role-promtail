@@ -1,6 +1,6 @@
 ---
 proxy_env: {}
-promtail_version: 2.2.0
+promtail_version: 2.2.1
 promtail_listen_port: 9080
 promtail_listen_address: 0.0.0.0
 promtail_config_dir: /etc/promtail
@@ -12,7 +12,6 @@ promtail_config_log_level: warn
 promtail_system_user: "{{ prometheus_user | default('loki') }}"
 promtail_system_group: "{{ prometheus_user | default('loki') }}"
 promtail_user_additional_groups: adm
-promtail_allow_firewall: false
 promtail_config:
   positions:
     filename: "{{ promtail_data_dir }}/positions.yaml"
