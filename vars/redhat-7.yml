@@ -1,4 +1,0 @@
----
-promtail_selinux_packages:
-  - libselinux-python
-  - policycoreutils-python
