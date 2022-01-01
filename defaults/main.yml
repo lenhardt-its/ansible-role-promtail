@@ -1,6 +1,6 @@
 ---
 proxy_env: {}
-promtail_version: 2.2.1
+promtail_version: 2.4.1
 promtail_listen_port: 9080
 promtail_listen_address: 0.0.0.0
 promtail_config_dir: /etc/promtail
